@@ -7,3 +7,5 @@
 void USART2_Init(void); // Kallar på och refererar till deklarationen av vår UART-funktion
 void test_setup(void); //Kallar på och refererar till vår testfunktion ur UART.c
 #endif //Förtydligar avslutningen av vår headerfil
+
+
