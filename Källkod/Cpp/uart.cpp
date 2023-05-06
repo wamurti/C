@@ -1,6 +1,6 @@
-#include "UART.h" //Hämtar vår samlingsfil för headers och funktioner
+#include "UART.h" //Läser in vår samlingsfil för headers och funktioner
 
-void USART2_Init(void) { //Deklarerar en funktion för att initiera USART-protkokollet och dess beståndsdelar
+void USART2_Init(void) { //Deklarerar en funktion för att initiera USART-protkokollet
 
 // 1. Enablea klocktillgång för uart2
 
@@ -23,25 +23,25 @@ GPIOA->MODER |= 0x00A0; //0x00A0 är 1010 0000 i binär. Sätter bitarna 5 och 7
 10: Alternate function mode
 11: Analog mode*/
 
-// 4. Välja typen av Alternate function för de valde pinsen. GPIOx_AFRL (for pin 0 to 7) and GPIOx_AFRH (for pin 8 to 15) 
+// 4. Väljer typen av Alternate function. GPIOx_AFRL (for pin 0 to 7) and GPIOx_AFRH (for pin 8 to 15) 
 GPIOA->AFR[0] &= ~0xFF00; //Rensar bitarna 8-15 för att förbereda pins PA2 och PA3
-GPIOA->AFR[0] |= 0x7700; //Sätter vi bitarna 8-11 samt 12-15 till formatet 0111
+GPIOA->AFR[0] |= 0x7700; //Sätter bitarna 8-11 och 12-15 till formatet 0111 som innebär AF07 med USART funktion
 
 /* Konstruktion av enhetens kommunikation avslutas */
 
 // Konfiguration utav UART
 
-USART2->BRR = 0x0683; //Sätter vi standard baud-rate med hjälp av hexadecimalen 0x0683 (9600bps)
-USART2->CR1 = 0x000C; //Sätter vi tx och rx till att arbeta i 8 bitars data. (8 bitars data, 1 stop bit, ingen paritet)
-USART2->CR2 = 0x000; //Nollställer CR2
-USART2->CR3 = 0x000; //Nollställer CR3
-USART2->CR1 |= 0x2000; //Omställer bit 13 (UART-Aktiveringen) till 1
+USART2->BRR = 0x0683; //Sätter standard baud-rate med hjälp av hexadecimalen 0x0683 (9600bps)
+USART2->CR1 = 0x000C; //Sätter tx och rx till att arbeta i 8 bitars data. (8 bitars data, 1 stop bit, ingen paritet)
+USART2->CR2 = 0x000; //Sätter samtliga CR2s bitar till 0 
+USART2->CR3 = 0x000; //Sätter samtliga CR3s bitar till 0 
+USART2->CR1 |= 0x2000; //Aktiverar USART genom att sätta bit 13 (USART ENABLE) till  1
 
 }
 // UART Write
 int USART2_write(int ch){ //Deklarerar skrivfunktionen (Överföringen av data till terminalen)
 
-  while(!(USART2->SR & 0x0080)){} //Sätter vi ett krav som kontrollerar att statusen på överföringen är tom och kan ta emot nästa karaktär (byte)
+  while(!(USART2->SR & 0x0080)){} //Kontrollerar statusregistrets bit 7 TXE (Transmit data register empty) att överföringen inte används och är tom så att den kan ta emot nästa byte
   USART2->DR = (ch & 0xFF); //Sätter överföringen av byten till dataregistret
 
   return ch;
@@ -50,6 +50,6 @@ int USART2_write(int ch){ //Deklarerar skrivfunktionen (Överföringen av data t
 // UART Read
 int USART2_read(void){ //Deklarerar läsfunktionen (mottagning av information)
 
-  while(!(USART2->SR & 0x0020)){} //Sätter vi ett krav som kontrollerar om det finns mer data att hämta
+  while(!(USART2->SR & 0x0020)){} //Kontrollerar statusregistrets bit 5 RXNE(Read data register not empty) om det finns data att hämta
   return USART2->DR; //Läser ut datan
 }
