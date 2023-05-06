@@ -31,7 +31,7 @@ typedef enum {
   BLUE
 }LedColor_Type;
 
-//Definerar ju / numrerar de olika lägena som LED kan befinna sig i
+//Definerar/numrerar de olika lägena som LED kan befinna sig i
 typedef enum {
   OFF = 0,
   ON = 1
