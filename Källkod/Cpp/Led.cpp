@@ -8,20 +8,20 @@ Led::Led(LedColor_Type _color, LedState_Type _state)
   this->state = _state;
 
   //Enablea klockan för LED-porten (GPIOB)
-  RCC->AHB1ENR |= LED_PORT_CLOCK;
+  RCC->AHB1ENR |= LED_PORT_CLOCK; // Sätter bit 1 i AHB1ENR till 1
 
   //Konfigurera LED-pinsen baserad på deras färg och status
   switch(_color){
 
     case RED: //Sätta portläget för LED-konfigurationen till output
-      LED_PORT->MODER |= LED_RED_MODE_BIT;
-      if(this->state == ON){
+      LED_PORT->MODER |= LED_RED_MODE_BIT; // Sätter bit 28 i GPIOB MODE-registret till 1 som ställer PB14 till general purpose output mode.
+      if(this->state == ON){  // kontrollerar om statusen/state är på. 
         //Stänga på LED
-        LED_PORT->ODR |= LED_RED_PIN;
+        LED_PORT->ODR |= LED_RED_PIN; //aktiverar output till GPIOB PB14 genom att sätta bit 14 till på eller "1" 
       }
       else{
         //Stänga av LED
-        LED_PORT->ODR &= ~LED_RED_PIN;
+        LED_PORT->ODR &= ~LED_RED_PIN; // Stänger output till PB14
       }
       break;
 
@@ -65,7 +65,7 @@ Led::Led(LedColor_Type _color, LedState_Type _state)
 
 
 }
-
+// En funktion som ändrar statusen på LED-objekt, utan att behöva skapa nytt objekt.
 void Led::setState(LedState_Type _state){
 
   //Sätta statusen av LED:n
@@ -136,7 +136,7 @@ void Led::setState(LedState_Type _state){
 
 LedState_Type Led::getState(void)const{
 
-  //Kontrollera färgen av den LED som efterfrågas, printa sedan statusen
+  //Kontrollera färgen av den LED som efterfrågas, printa sedan statusen. Eftersom alla fall har samma funktion behövs inte specifika instruktioner. 
   switch(this->color){
 
     case RED:
